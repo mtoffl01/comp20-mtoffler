@@ -1,5 +1,76 @@
-.homer {
-	background-image: url("./homer.jpg");
-	height: 625px;
-	width: 625px;
+@media screen
+and (min-device-width : 1601px)
+{
+	.homer {
+		background-image: url("./homer.jpg");
+		height: 313px;
+		width: 313px;
+		background-position: 0 0px; 	
+	}
+}
+
+@media screen
+and (min-device-width : 1401px) and (max-device-width: 1600px)
+{
+	.homer {
+		background-image: url("./homer.jpg");
+		height: 313px;
+		width: 313px;
+		background-position: 313px 0px; 	
+	}
+}
+
+@media screen
+and (min-device-width : 1201px) and (max-device-width: 1400px)
+{
+	.homer {
+		background-image: url("./homer.jpg");
+		height: 313px;
+		width: 313px;
+		background-position: left bottom;
+	}
+}
+
+@media screen
+and (min-device-width : 1001px) and (max-device-width: 1200px)
+{
+	.homer {
+		background-image: url("./homer.jpg");
+		height: 313px;
+		width: 313px;
+		background-position: right bottom;
+	}
+}
+
+@media screen
+and (min-device-width : 801px) and (max-device-width: 1000px)
+{
+	.homer {
+		background-image: url("./homer.jpg");
+		height: 313px;
+		width: 313px;
+		background-position: left bottom;
+	}
+}
+
+@media screen
+and (min-device-width : 601px) and (max-device-width: 800px)
+{
+	.homer {
+		background-image: url("./homer.jpg");
+		height: 313px;
+		width: 313px;
+		background-position: right top;
+	}
+}
+
+@media screen
+and (max-device-width: 600px)
+{
+	.homer {
+		background-image: url("./homer.jpg");
+		height: 313px;
+		width: 313px;
+		background-position: left top;
+	}
 }
