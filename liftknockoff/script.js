@@ -8,8 +8,9 @@
             };
             var map;
             var marker;
-            var vehiclesLatLng = [];
-            var weinerLatLng = new google.maps.LatLng(0,0);
+            ridesLatLng = [];
+            weiner_exists = false;
+            weinerLatLng = new google.maps.LatLng(0,0);
             var infowindow = new google.maps.InfoWindow();
             function init() {
                 map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
@@ -43,10 +44,6 @@
                 marker.setMap(map);
                     
                 // Open info window on click of marker
-                google.maps.event.addListener(marker, 'click', function() {
-                    infowindow.setContent(marker.title);
-                    infowindow.open(map, marker);
-                });
                 getRides();
                 constructInfoWindow();
             }
@@ -57,7 +54,7 @@
                     icon: 'betty_icon.jpg'
                 },
                 passenger: {
-                    icon: 'man.png'
+                    icon: 'passenger.png'
                 },
                 vehicle: {
                     icon: 'car.png'
@@ -79,19 +76,28 @@
                         data = request.responseText;
                         console.log(data);
                         rides = JSON.parse(data);
+                        console.log("name " +rides.name);
                         vehicles = rides.vehicles;
+                        console.log(vehicles);
                         //for all the elements in the object
                         for (count = 0; count< vehicles.length; count++){
                             if (vehicles[count].username == "WEINERMOBILE"){
-                                console.log("weiner found");
+                                weiner_exists = true;
+                                //console.log("weiner found");
                                 makeWeinerMarker(vehicles[count]);
+
                             }
                             else{
-                                console.log("No weiner");
-                                makeCarMarker(vehicles[count]);
+                                if (vehicles.name == "vehicles"){
+                                    makeCarMarker(vehicles[count]);
+                                }
+                                else{
+                                    makePassengerMarker(vehicles[count]);
+                                }
                             }
                             //create a position variable of each lat and long
                         }
+
                     }
                     else if (request.readyState==4 && request.status != 200){
                         console.log("Something went wrong!");
@@ -107,13 +113,13 @@
             function makeWeinerMarker(vehicle)
             {
                 var latLng = new google.maps.LatLng(vehicle.lat, vehicle.lng);
-                                var marker = new google.maps.Marker({
+                                var weinerMarker = new google.maps.Marker({
                                     position: latLng,
                                     title: vehicle._id,
                                     //icon should be either weinermobile or car, depending on the data
                                     icon: 'weinermobile.png'
                                 })
-                                marker.setMap(map);
+                                weinerMarker.setMap(map);
                 weinerLatLng = latLng;
 
 
@@ -122,28 +128,55 @@
             function makeCarMarker(vehicle)
             {
                 var latLng = new google.maps.LatLng(vehicle.lat, vehicle.lng);
-                                var marker = new google.maps.Marker({
+                                var carMarker = new google.maps.Marker({
                                     position: latLng,
                                     title: vehicle._id,
                                     //icon should be either weinermobile or car, depending on the data
                                     icon: 'car.png'
                                 })
-                                marker.setMap(map);
-                vehiclesLatLng.push(latLng);
+                                carMarker.setMap(map);
+                ridesLatLng.push(latLng);
             };
+
+            function makePassengerMarker(vehicle)
+            {
+                 var latLng = new google.maps.LatLng(vehicle.lat, vehicle.lng);
+                 var passengerMarker = new google.maps.Marker({
+                     position: latLng,
+                     title: vehicle._id,
+                     //icon should be either weinermobile or car, depending on the data
+                     icon: 'passenger.png'
+                    })
+                 passengerMarker.setMap(map);
+                ridesLatLng.push(latLng);
+            }
 
             function constructInfoWindow()
             {
                 console.log("constructInfoWindow");
                 var dist = getNearestVehicle();
+                console.log("weiner_exists " +weiner_exists);
+                
                 var w_dist = getWeinerDist();
+                
+                google.maps.event.addListener(marker, 'click', function() {
+                    if (weiner_exists == true){
+                        console.log("in here");
+                        infowindow.setContent("My username: j3YRjYyc. The nearest vehicle is "+dist+" miles away. The WEINERMOBILE is "+w_dist+"miles away.");
+                    }
+                    else{
+                        console.log("not in there");
+                        infowindow.setContent("My username: j3YRjYyc. The nearest vehicle is "+dist+" miles away.")
+                    }
+                    infowindow.open(map, marker);
+                });
             };
 
             function getNearestVehicle()
             {
                 var dist = Number.MAX_VALUE;
-                for (count = 0; count<vehiclesLatLng.length; count++){
-                    var temp = google.maps.geometry.spherical.computeDistanceBetween(me, vehiclesLatLng[count]);
+                for (count = 0; count<ridesLatLng.length; count++){
+                    var temp = google.maps.geometry.spherical.computeDistanceBetween(me, ridesLatLng[count]);
                     if (temp < dist)
                         dist = temp;
                 }
