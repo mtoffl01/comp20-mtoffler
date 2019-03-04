@@ -13,6 +13,23 @@
                 map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
                 getMyLocation();
             }
+
+            var icons = 
+            {
+                self :{
+                    icon: 'betty_icon.jpg'
+                },
+                passenger: {
+                    icon: 'man.png'
+                },
+                vehicle: {
+                    icon: 'car.png'
+                },
+                weinermobile: {
+                    icon: 'weinermobile.png'
+                }
+            };
+
             function getMyLocation() {
                 if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
                     navigator.geolocation.getCurrentPosition(function(position) {
@@ -46,6 +63,7 @@
                 getRides();
             }
 
+            var weinermobile = false;
             var request = new XMLHttpRequest();
             function getRides(){
             request.open("POST", "https://hans-moleman.herokuapp.com/rides", true);
@@ -64,18 +82,7 @@
                                 position: latLng,
                                 title: data[count]._id,
                                 //icon should be either weinermobile or car, depending on the data
-                                icon: function() {
-                                    if (data[count].username == "WEINERMOBILE")
-                                    {
-                                        return 'weinermobile.png';
-                                    }
-                                    else if (data == 'vehicles') {
-                                        return 'car.png';
-                                    }
-                                    else if (data == 'passengers'){
-                                        return 'man.png';
-                                    }
-                                }
+                                //icon: 
                             })
                             marker.setMap(map);
                         }
@@ -88,6 +95,6 @@
                     }
                 };
 
-                request.send("username= j3YRjYyc&lat=" + myLat + "&lng=" + myLng);
+                request.send("username=j3YRjYyc&lat=" + myLat + "&lng=" + myLng);
             }
             
