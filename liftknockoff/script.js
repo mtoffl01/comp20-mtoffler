@@ -127,6 +127,12 @@ function makeWeinerMarker(vehicle)
     })
     weinerMarker.setMap(map);
     weinerLatLng.push(latLng);
+    var dist = google.maps.geometry.spherical.computeDistanceBetween(me, latLng);
+    google.maps.event.addListener(weinerMarker, 'click', function()
+    {
+        infowindow.setContent(vehicle.username+" is "+dist+" miles away from you.")
+        infowindow.open(map, weinerMarker);
+    });
 };
 
 function makeCarMarker(vehicle)
