@@ -63,7 +63,7 @@
                     icon: 'weinermobile.png'
                 }
             };
-            var vehicles;
+            var clients;
 
             //var weinermobile = false;
             var request = new XMLHttpRequest();
@@ -76,23 +76,28 @@
                         data = request.responseText;
                         console.log(data);
                         rides = JSON.parse(data);
-                        console.log("name " +rides.name);
-                        vehicles = rides.vehicles;
-                        console.log(vehicles);
+                        if (rides.hasOwnProperty("vehicles")){
+                            console.log("hayyy");
+                            clients = rides.vehicles;
+                        }
+                        else { //passengers 
+                            console.log("pass");
+                            clients = rides.passengers;
+                        }
                         //for all the elements in the object
-                        for (count = 0; count< vehicles.length; count++){
-                            if (vehicles[count].username == "WEINERMOBILE"){
+                        for (count = 0; count< clients.length; count++){
+                            if (clients[count].username == "WEINERMOBILE"){
                                 weiner_exists = true;
                                 //console.log("weiner found");
-                                makeWeinerMarker(vehicles[count]);
+                                makeWeinerMarker(clients[count]);
 
                             }
                             else{
-                                if (vehicles.name == "vehicles"){
-                                    makeCarMarker(vehicles[count]);
+                                if (rides.hasOwnProperty("vehicles")){
+                                    makeCarMarker(clients[count]);
                                 }
                                 else{
-                                    makePassengerMarker(vehicles[count]);
+                                    makePassengerMarker(clients[count]);
                                 }
                             }
                             //create a position variable of each lat and long
@@ -132,18 +137,18 @@
                                     position: latLng,
                                     title: vehicle._id,
                                     //icon should be either weinermobile or car, depending on the data
-                                    icon: 'car.png'
+                                    icon: 'passenger.png' //'car.png'
                                 })
                                 carMarker.setMap(map);
                 ridesLatLng.push(latLng);
             };
 
-            function makePassengerMarker(vehicle)
+            function makePassengerMarker(pass)
             {
-                 var latLng = new google.maps.LatLng(vehicle.lat, vehicle.lng);
+                 var latLng = new google.maps.LatLng(pass.lat, pass.lng);
                  var passengerMarker = new google.maps.Marker({
                      position: latLng,
-                     title: vehicle._id,
+                     title: pass._id,
                      //icon should be either weinermobile or car, depending on the data
                      icon: 'passenger.png'
                     })
