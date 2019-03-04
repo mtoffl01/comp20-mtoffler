@@ -56,20 +56,28 @@
                         data = request.responseText;
                         console.log(data);
                         rides = JSON.parse(data);
+                        //for all the elements in the object
                         for (count=0; count< Object.keys(data).length; count++){
+                            //create a position variable of each lat and long
                             var latLng = new google.maps.LatLng(data[count].lat, data[count].lng);
                             var marker = new google.maps.Marker({
                                 position: latLng,
                                 title: data[count]._id,
+                                //icon should be either weinermobile or car, depending on the data
                                 icon: function() {
                                     if (data[count].username == "WEINERMOBILE")
                                     {
                                         return 'weinermobile.png';
                                     }
-                                    else
+                                    else if (data == 'vehicles') {
                                         return 'car.png';
-                                };
+                                    }
+                                    else if (data == 'passengers'){
+                                        return 'man.png';
+                                    }
+                                }
                             })
+                            marker.setMap(map);
                         }
                     }
                     else if (request.readyState==4 && request.status != 200){
@@ -78,7 +86,6 @@
                     else {
                         console.log("In progress");
                     }
-                };
                 };
 
                 request.send("username= j3YRjYyc&lat=" + myLat + "&lng=" + myLng);
