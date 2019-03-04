@@ -41,7 +41,7 @@ function renderMap() {
     marker = new google.maps.Marker({
         position: me,
         title: "Here I Am!",
-        icon: 'betty_icon.jpg'
+        icon: 'betty_icon.png'
     });
     marker.setMap(map);
                     
@@ -53,7 +53,7 @@ function renderMap() {
 var icons = 
 {
     self :{
-        icon: 'betty_icon.jpg'
+        icon: 'betty_icon.png'
     },
     passenger: {
         icon: 'passenger.png'
