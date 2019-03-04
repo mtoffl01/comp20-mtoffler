@@ -75,14 +75,16 @@
                         console.log(data);
                         rides = JSON.parse(data);
                         //for all the elements in the object
-                        for (count=0; count< Object.keys(data).length; count++){
+                        console.log ("There are " + Object.keys(rides).length+ "keys");
+                        for (var i in rides){
+                             console.log("obj "+ rides[0]["_id"]);
                             //create a position variable of each lat and long
-                            var latLng = new google.maps.LatLng(data[count].lat, data[count].lng);
+                            var latLng = new google.maps.LatLng(rides[i].lat, rides[i].lng);
                             var marker = new google.maps.Marker({
                                 position: latLng,
-                                title: data[count]._id,
+                                title: rides[i]._id,
                                 //icon should be either weinermobile or car, depending on the data
-                                //icon: 
+                                icon: 'car.png'
                             })
                             marker.setMap(map);
                         }
