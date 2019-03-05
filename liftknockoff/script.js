@@ -9,7 +9,6 @@ var myOptions = {
 var map;
 var marker;
 ridesLatLng = [];
-weiner_exists = false;
 weinerLatLng = [];
 var infowindow = new google.maps.InfoWindow();
 
@@ -47,7 +46,7 @@ function renderMap() {
                     
     // Open info window on click of marker
     getRides();
-    constructInfoWindow();
+    //constructInfoWindow();
 };
 
 var icons = 
@@ -80,31 +79,35 @@ function getRides(){
             console.log(data);
             rides = JSON.parse(data);
             if (rides.hasOwnProperty("vehicles")){
-                console.log("hayyy");
+                console.log("vehicle mode");
                 clients = rides.vehicles;
+                for (count = 0; count< clients.length; count++){
+                    if (clients[count].username == "WEINERMOBILE"){
+                        weiner_exists = true;
+                        //console.log("weiner found");
+                        makeWeinerMarker(clients[count]);
+                    }
+                    else {
+                        makeCarMarker(clients[count]);
+                    }
+                }
+                constructInfoWindow("vehicle");
             }
             else { //passengers 
-                console.log("pass");
+                console.log(mode);
                 clients = rides.passengers;
-            }
-            //for all the elements in the object
-            for (count = 0; count< clients.length; count++){
-                if (clients[count].username == "WEINERMOBILE"){
-                    weiner_exists = true;
-                    //console.log("weiner found");
-                    makeWeinerMarker(clients[count]);
-                }
-                else{
-                    if (rides.hasOwnProperty("vehicles")){
-                        makeCarMarker(clients[count]);
+                for (count = 0; count< clients.length; count++){
+                    if (clients[count].username == "WEINERMOBILE"){
+                        weiner_exists = true;
+                        //console.log("weiner found");
+                        makeWeinerMarker(clients[count]);
                     }
                     else{
                         makePassengerMarker(clients[count]);
                     }
                 }
-                //create a position variable of each lat and long
+                constructInfoWindow("passenger");
             }
-
         }
         else if (request.readyState==4 && request.status != 200){
             console.log("Something went wrong!");
@@ -146,6 +149,12 @@ function makeCarMarker(vehicle)
     })
     carMarker.setMap(map);
     ridesLatLng.push(latLng);
+    var dist = google.maps.geometry.spherical.computeDistanceBetween(me, latLng);
+    google.maps.event.addListener(carMarker, 'click', function()
+    {
+        infowindow.setContent(vehicle.username+" is "+dist+" miles away from you.")
+        infowindow.open(map, carMarker);
+    });
 };
 
 function makePassengerMarker(pass)
@@ -159,9 +168,15 @@ function makePassengerMarker(pass)
     })
     passengerMarker.setMap(map);
     ridesLatLng.push(latLng);
+    var dist = google.maps.geometry.spherical.computeDistanceBetween(me, latLng);
+    google.maps.event.addListener(passengerMarker, 'click', function()
+    {
+        infowindow.setContent(pass.username+" is "+dist+" miles away from you.")
+        infowindow.open(map, passengerMarker);
+    });
 };
 
-function constructInfoWindow()
+function constructInfoWindow(mode)
 {
     google.maps.event.addListener(marker, 'click', function() {
         console.log("constructInfoWindow");
@@ -170,20 +185,20 @@ function constructInfoWindow()
             if (weinerLatLng.length >0)
             {
                 var w_dist = getWeinerDist();
-                infowindow.setContent("My username: j3YRjYyc. The nearest vehicle is "+dist+" miles away. The WEINERMOBILE is "+w_dist+"miles away.");
+                infowindow.setContent("Hello, j3YRjYyc. The nearest "+mode+" is "+dist+" miles away. The WEINERMOBILE is "+w_dist+"miles away.");
             }
             else{
-                infowindow.setContent("My username: j3YRjYyc. The nearest vehicle is "+dist+" miles away. There is no weinermobile!")
+                infowindow.setContent("Hello, j3YRjYyc. The nearest "+mode+" is "+dist+" miles away. There is no weinermobile!")
             }
         }
         else if (weinerLatLng.length>0)
         {
             var w_dist = getWeinerDist();
-            infowindow.setContent("The weinermobile is "+w_dist +" miles away.");
+            infowindow.setContent("Hello, j3YRjYyc. The weinermobile is "+w_dist +" miles away.");
         }
         else 
         {
-            infowindow.setContent("Whoops! No clients or weinermobile around!");
+            infowindow.setContent("Hello, j3YRjYyc. No clients or weinermobile around!");
         }   
         infowindow.open(map, marker);
     });
