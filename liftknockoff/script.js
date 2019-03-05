@@ -4,12 +4,108 @@ var me = new google.maps.LatLng(myLat, myLng);
 var myOptions = {
     zoom: 13, // The larger the zoom number, the bigger the zoom
     center: me,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    styles: [
+            {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+            {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+            {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+            {
+              featureType: 'administrative.locality',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#d59563'}]
+            },
+            {
+              featureType: 'poi',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#d59563'}]
+            },
+            {
+              featureType: 'poi.park',
+              elementType: 'geometry',
+              stylers: [{color: '#263c3f'}]
+            },
+            {
+              featureType: 'poi.park',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#6b9a76'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'geometry',
+              stylers: [{color: '#38414e'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'geometry.stroke',
+              stylers: [{color: '#212a37'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#9ca5b3'}]
+            },
+            {
+              featureType: 'road.highway',
+              elementType: 'geometry',
+              stylers: [{color: '#746855'}]
+            },
+            {
+              featureType: 'road.highway',
+              elementType: 'geometry.stroke',
+              stylers: [{color: '#1f2835'}]
+            },
+            {
+              featureType: 'road.highway',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#f3d19c'}]
+            },
+            {
+              featureType: 'transit',
+              elementType: 'geometry',
+              stylers: [{color: '#2f3948'}]
+            },
+            {
+              featureType: 'transit.station',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#d59563'}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'geometry',
+              stylers: [{color: '#17263c'}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#515c6d'}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'labels.text.stroke',
+              stylers: [{color: '#17263c'}]
+            }
+          ]
 };
 var map;
 var marker;
 ridesLatLng = [];
 weinerLatLng = [];
+var icons = 
+{
+    self :{
+        icon: 'betty_icon.jpg'
+    },
+    passenger: {
+        icon: 'passenger.png'
+    },
+    vehicle: {
+        icon: 'car.png'
+    },
+    weinermobile: {
+        icon: 'weinermobile.png'
+    }
+};        
+var clients;
 var infowindow = new google.maps.InfoWindow();
 
 function init() {
@@ -48,24 +144,6 @@ function renderMap() {
     getRides();
     //constructInfoWindow();
 };
-
-var icons = 
-{
-    self :{
-        icon: 'betty_icon.jpg'
-    },
-    passenger: {
-        icon: 'passenger.png'
-    },
-    vehicle: {
-        icon: 'car.png'
-    },
-    weinermobile: {
-        icon: 'weinermobile.png'
-    }
-};
-            
-var clients;
 
 //var weinermobile = false;
 var request = new XMLHttpRequest();
@@ -122,6 +200,7 @@ function getRides(){
 function makeWeinerMarker(vehicle)
 {
     var latLng = new google.maps.LatLng(vehicle.lat, vehicle.lng);
+    console.log("making weiner");
     var weinerMarker = new google.maps.Marker({
         position: latLng,
         title: vehicle._id,
@@ -130,7 +209,7 @@ function makeWeinerMarker(vehicle)
     })
     weinerMarker.setMap(map);
     weinerLatLng.push(latLng);
-    var dist = google.maps.geometry.spherical.computeDistanceBetween(me, latLng);
+    var dist = toMiles(google.maps.geometry.spherical.computeDistanceBetween(me, latLng));
     google.maps.event.addListener(weinerMarker, 'click', function()
     {
         infowindow.setContent(vehicle.username+" is "+dist+" miles away from you.")
@@ -141,6 +220,7 @@ function makeWeinerMarker(vehicle)
 function makeCarMarker(vehicle)
 {
     var latLng = new google.maps.LatLng(vehicle.lat, vehicle.lng);
+    console.log("making car");
     var carMarker = new google.maps.Marker({
         position: latLng,
         title: vehicle._id,
@@ -149,7 +229,7 @@ function makeCarMarker(vehicle)
     })
     carMarker.setMap(map);
     ridesLatLng.push(latLng);
-    var dist = google.maps.geometry.spherical.computeDistanceBetween(me, latLng);
+    var dist = toMiles(google.maps.geometry.spherical.computeDistanceBetween(me, latLng));
     google.maps.event.addListener(carMarker, 'click', function()
     {
         infowindow.setContent(vehicle.username+" is "+dist+" miles away from you.")
@@ -168,7 +248,7 @@ function makePassengerMarker(pass)
     })
     passengerMarker.setMap(map);
     ridesLatLng.push(latLng);
-    var dist = google.maps.geometry.spherical.computeDistanceBetween(me, latLng);
+    var dist = toMiles(google.maps.geometry.spherical.computeDistanceBetween(me, latLng));
     google.maps.event.addListener(passengerMarker, 'click', function()
     {
         infowindow.setContent(pass.username+" is "+dist+" miles away from you.")
@@ -185,7 +265,7 @@ function constructInfoWindow(mode)
             if (weinerLatLng.length >0)
             {
                 var w_dist = getWeinerDist();
-                infowindow.setContent("Hello, j3YRjYyc. The nearest "+mode+" is "+dist+" miles away. The WEINERMOBILE is "+w_dist+"miles away.");
+                infowindow.setContent("Hello, j3YRjYyc. The nearest "+mode+" is "+dist+" miles away. The weinermobile is "+w_dist+"miles away.");
             }
             else{
                 infowindow.setContent("Hello, j3YRjYyc. The nearest "+mode+" is "+dist+" miles away. There is no weinermobile!")
@@ -204,11 +284,11 @@ function constructInfoWindow(mode)
     });
 };
 
-function getNearestVehicle(c)
+function getNearestVehicle()
 {
     var dist = Number.MAX_VALUE;
     for (count = 0; count<ridesLatLng.length; count++){
-        var temp = google.maps.geometry.spherical.computeDistanceBetween(me, ridesLatLng[count]);
+        var temp = toMiles(google.maps.geometry.spherical.computeDistanceBetween(me, ridesLatLng[count]));
         if (temp < dist){
             console.log("temp is "+temp);
             dist = temp;
@@ -220,8 +300,13 @@ function getNearestVehicle(c)
 
 function getWeinerDist()
 {
-    dist = google.maps.geometry.spherical.computeDistanceBetween(me, weinerLatLng[0]);
+    dist = toMiles(google.maps.geometry.spherical.computeDistanceBetween(me, weinerLatLng[0]));
     console.log("weiner dist "+ dist);
     return dist;
+};
+
+function toMiles(dist)
+{
+    return (0.000621371192 * dist).toFixed(2);
 };
             
