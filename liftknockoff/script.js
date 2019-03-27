@@ -156,7 +156,7 @@ function renderMap() {
 //send request
 var request = new XMLHttpRequest();
 function getRides(){
-    request.open("POST", "https://https://pure-wave-37513.herokuapp.com/rides", true);
+    request.open("POST", "https://pure-wave-37513.herokuapp.com/rides", true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
