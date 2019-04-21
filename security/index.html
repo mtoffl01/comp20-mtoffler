@@ -8,16 +8,53 @@
 </head>
 
 <body>
-  <p>Introduction:
+  <p>Introduction: This project is composed of a server and a web app. The server
+    gathers information on the clients, such as whether they are a vehicle or a 
+    passenger, their username, their geolocation, and the time at which the info
+    was sent. The web app is a map that uses the server data to locate nearby
+    passengers or vehicles. The purpose of this assignment was to test for 
+    vulnerabilities in the program - i.e, mechanisms by which a user can either 
+    alter the pre-existing program or retrieve more data than the server intends 
+    to share. 
   </p>
-  <p>Methodology:
+  <p>Methodology: I didn't use any external tools such as Burpsuite or ZAP. I
+    used "curl" to send data to the server. My first few rounds of black-box 
+    testing were fruitless, and my partner had actually warned me that some of 
+    the example tests we'd seen in class wouldn't work on his program. For this
+    reason, I quickly downloaded and inspected his code in order to follow 
+    his process more closely and find sites for vulernability.
   </p>
   <p>Findings:
+    I found that certain mechanisms for storing data that weren't necessarily
+    intended to be for security purposes actually functioned to provide security
+    in my partner's program. His program is pretty strict on data checking, and 
+    this practice augmented the security. I will address two failed attacks, and
+    why they failed due his particular implementation. The injection attack I tried
+    did fail. An injection attack is when a hacker tries to tamper with or get access 
+    to the information stored in the database. I was, however, able to 
+    perform a a cross-site scripting (XSS) attack when entering passenger data. 
+    XSS attacks are when a user sends data to the server that actually goes in
+    and appends new / alters pre-existing code in the program, resulting in 
+    unintended behavior. 
   </p>
   <p>Issues Found:
   	<ol>
   		<li>
-  			The issue:
+  			The issue: Database injection</br>
+        Location: /rides POST route. Viewed in terminal via curl.</br>
+        Severity: Negative. His program protects against this attack.</br>
+        Description: When sending data to the server, I tried to access all the 
+        vehicle data in the database using the [$ne] operator. The data I sent 
+        to the server looked like this: "username[$ne]=&lat=1&lng=2". This was 
+        intended to have the program send back all the vehicles whose username
+        is <i>not equal</i> to...the empty field. So, that would catch all the
+        vehicles, since none of them have an empty username! While this attack
+        works on my own program, it does not work on my partner's. This is due
+        to the flow of his implementation: he calls find() to gather all documents
+        from the collection, and then manually does a check to see if they don't
+        match the specified criteria, subsequently removing them. 
+        <img src="injection.png" width="500" height="500" alt="injection attempt">
+
   		</li>
   		<li>
   			The issue:
@@ -25,6 +62,9 @@
   		<li>
   			The issue:
   		</li>
+      <li>
+        The issue:
+      </li>
   		
   	</ol>
   </p>
