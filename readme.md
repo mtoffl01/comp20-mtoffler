@@ -17,8 +17,8 @@ full-time after graduation. Thank you, Ming!
 4. What was the most important thing that you learned in this course? Cite two examples as evidence.
 First point would be the power of API's / using others' source code / open source code / not reinventing the wheel - again, 
 prior to this class, I had done all my assignments on data structures and algo. For this stuff, online 
-info was menially helpful, at best. But this class taught me the value of using others' source code 
-- like an API - in the field of web programming.
+info was menially helpful, at best. But this class taught me the value of using others' source code - like
+an API - in the field of web programming.
 My second greatest takeaway is how the web works. I found the distinction between web browser and server really 
 interesting and significant. I still have a lot to learn, but this distinction made conceptual
 sense to me.
