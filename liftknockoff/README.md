@@ -1,7 +1,6 @@
-1. I think everything has been correctly implemented!
-2. I discussed the assignment with Wei-Ren Murray, and two other girls
-	I sat with during Monday's office hours - don't know their names, though!
-	They helped me understand the difference between my "rides" data structure and
-	the rides["vehicles"] part of this structure
-3. I probably spent about 8 hours on the assignment. There was a lot I just didn't
-	understand, like trying to access rides versus rides["vehicles"]...
+"Lift Knockoff" is the front-end of a ride-share service (Like Lyft, or Uber!). It can be used in either "passenger" or "driver" mode--passengers receive information on nearby vehicles; drivers receive information about nearby passengers. The program retrieves a user's latitude and longitude using the Geolocation API and sends this information to a pre-created server (this server is currently down, but it was created by my professor for the purpose of this project). The program then retrieves information from the server about the locations of nearby passengers or vehicles (depending on the mode). The user's location as well as the location of nearby passengers/vehicles are shown as markers on a map (created using Google Maps API). When a user clicks on their own marker, an info-window pops up showing how far away the user is from the nearest vehicle/passenger. Clicking on the marker for a passenger/vehicle will open up an info-window showing how many miles away the passenger/vehicle is from the user.
+
+Key Concepts:
+- Using third-party JavaScript APIs (in this case, Google Maps)
+- HTML5 geolocation API to determine user's location
+- XMLHttpRequestobject to make requests and manage the response data
